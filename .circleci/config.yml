@@ -1,0 +1,89 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.1 # primary container for the build job
+      - image: circleci/postgres:10.6-alpine-ram # an example of how to specify a service container
+        environment:
+          POSTGRES_USER: test-user
+          POSTGRES_DB: test-db
+          POSTGRES_PASSWORD: ""
+      # used to specify where a job's steps run
+    working_directory: ~/repo
+
+    # to run specific commands
+    steps:
+      # checkout is used to check out source code
+      - checkout
+    
+      # Download and cache dependencies
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
+
+      - &InstallDependencies
+        run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            sudo apt-get update
+            sudo apt-get install python3
+            sudo apt-get install python3-pip
+            sudo python3 -m pip install --upgrade pip
+            pip install -r requirements.txt
+      # use catch to save time between runs
+      # save to cache certain files
+      - save_cache:
+            paths:
+              - ./venv
+            key: v2-dependencies-{{ checksum "requirements.txt" }}
+      
+      - run:
+          name: run tests
+          no_output_timeout: 30m
+          command: |
+            . venv/bin/activate
+            python3 manage.py test
+
+      # - add_ssh_keys:
+      #     fingerprints:
+      #       - "${erpv2_fingerprint}"
+      #       - "${erpv2_staging_fingerprint}"
+      #       - "${arp_prod_fprint}"
+      #       - "${arp_prod_one_fprint}"
+
+  staging_deploy:
+    docker:
+      - image: circleci/python:3.6.1
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - deploy:
+          name: Server Deployment
+          command: |
+              ssh -o "StrictHostKeyChecking no" ${INSTANCE_USER}@${IP_ADDRESS} bash --login -i" \
+              cd
+              cd portal
+              git checkout ${CIRCLE_BRANCH}
+              sudo git pull origin  ${CIRCLE_BRANCH}
+              sh scripts/deployments.sh"
+              exit
+  
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+      - server_deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+      
