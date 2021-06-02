@@ -57,7 +57,7 @@ jobs:
       #       - "${arp_prod_fprint}"
       #       - "${arp_prod_one_fprint}"
 
-  staging_deploy:
+  server_deploy:
     docker:
       - image: circleci/python:3.6.1
     working_directory: ~/repo
