@@ -441,13 +441,13 @@
         {% for obj in projects %}
         <div class="gym-site">
           <img src="{{obj.image.url}}" alt="image" />
-          <h3>{{obj.title}}</h3>
+          <h3>{{obj.name}}</h3>
           <p>{{obj.description}}</p>
           <div class="button-container">
-            <a href="{{obj.live}}" target="_blank"
+            <a href="{{obj.live_link}}" target="_blank"
               >Live Site</a
             >
-            <a href="{{obj.code}}" target="_blank"
+            <a href="{{obj.code_link}}" target="_blank"
               >Code</a
             >
           </div>
