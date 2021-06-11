@@ -22,10 +22,12 @@ class Product(models.Model):
 class Order(models.Model):
     product=models.ForeignKey('Product', on_delete=models.CASCADE)
     customer=models.CharField(max_length=100)
+    quantity=models.IntegerField()
+    location=models.CharField(max_length=100)
     time=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.product
+        return str(self.time)
 
 
 class Image(models.Model):
