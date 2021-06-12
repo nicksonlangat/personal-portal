@@ -97,10 +97,10 @@ def place_order(request):
     response= {
        "actions": [
 		{
-			"say": "Cool I'll help with that. "
+			"say": "Cool 👍🏾👍🏾 I'll help with that. "
 		},
 		{
-			"say": "Hold on as I analyse your requirements. "
+			"say": "Hold on as I analyse your requirements  🙇🏾‍♂️🙇🏾‍♂️. "
 		},
 		{
 			"collect": {
