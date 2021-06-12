@@ -8,13 +8,15 @@ router.register(r'images', views.ImageViewset)
 
 urlpatterns = [
     path('', views.start_up),
-    path('place_order', views.order),
+    path('place_order', views.place_order),
     path('complete_order', views.complete_order),
+    path('completed_order', views.completed_order),
     path('make_payment', views.make_payment),
-    path('done_deal', views.done_deal),
+    path('collect_order', views.collect_order),
     path('get_shop', views.get_shop_poster),
     path('api/', include(router.urls)),
     path('push', views.push),
     path('shops', views.shops),
+     path('pay', views.pay),
 ]
 

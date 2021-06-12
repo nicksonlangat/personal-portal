@@ -1,6 +1,6 @@
 from bot.serializers import ImageSerializer
 from bot.models import Image, Order, Product
-from django.http.response import JsonResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import render
 import datetime
 import random
@@ -20,41 +20,20 @@ def multiply(num1, num2):
 message= emoji.emojize("""
 *Some commands you can give me:* :sunglasses:
 
-:heavy_check_mark: *'shops':* Get a list of all merchants available on Kwyk :hotel:
+:heavy_check_mark: *[sasa][hey][hi][hello][vipi]*: Place your order:wave:
 
 :heavy_check_mark: *'merchants':* Get a list of all merchants available on Kwyk :hotel:
 
-:heavy_check_mark: *'patners':* Get a list of all merchants available on Kwyk :hotel:
+:heavy_check_mark: *[quantity][product][merchant][location][phone]*: Start ordering process:tada:
 
-:heavy_check_mark: i want *[quantity] [product]* from *[merchant]* am in *[location]*: Start ordering process:tada:
-
-:heavy_check_mark: send *[quantity] [product]* from *[merchant]* to *[location]*: Start ordering process:tada:
-
-:heavy_check_mark: deliver *[quantity] [product]* from *[merchant]* to *[location]*: Start ordering process:tada:
-
-:heavy_check_mark: *[shop name]*: Get all products sold by that shop :convenience_store:
-
-:heavy_check_mark: show me *[shop name]*: Get all products sold by that shop :convenience_store:
+:heavy_check_mark: *[shop name]*: Get posters of products sold by that shop :convenience_store:
 """, use_aliases=True)
 
 @csrf_exempt
 def start_up(request):
     if request.method == 'POST':
-		#    num= request.POST.get('From')
-		#    print(num)
 		   response={
        "actions": [
-		{
-			"show": {
-				"images": [
-					{
-						"label": f"Here are our Merchants",
-						"url": 'https://53fe58a0bbc0.ngrok.io/media/images/Whats_app_order_1.jpg'#make it dynamic
-					}
-				],
-				"body": f"Here are our Merchants",
-			}
-		},
 		{
 			"say": {
 				"speech": f"Hello there 👋🏾! Poa sana , my name is Kwyk AI" + f" and I help wonderful users like you place and pay for orders right here on WhatsApp 😊"
@@ -76,7 +55,7 @@ def start_up(request):
 					}
 				],
 				"on_complete": {
-					"redirect": "https://53fe58a0bbc0.ngrok.io/bot/done_deal"
+					"redirect": "https://techwithnick.com/bot/collect_order"
 				}
 			}
 		}
@@ -95,7 +74,7 @@ def shops(request):
 				"images": [
 					{
 						"label": f"Here are our Merchants",
-						"url": 'https://53fe58a0bbc0.ngrok.io/media/images/Whats_app_order_1.jpg'#make it dynamic
+						"url": 'https://techwithnick.com/media/images/Whats_app_order_1.jpg'#make it dynamic
 					}
 				],
 				"body": f"Here are our Merchants",
@@ -106,16 +85,14 @@ def shops(request):
     return JsonResponse(response)
 
 @csrf_exempt
-def order(request):
+def place_order(request):
     if request.method == 'POST':
 	    shop= request.POST.get('Field_shop_name_Value')
 	    loc= request.POST.get('Field_location_Value')
 	    item = request.POST.get('Field_prod_Value')
 	    qty=request.POST.get('Field_qty_Value')
+	    mobile=request.POST.get('Field_mobil_Value')
 	    memory=json.loads(request.POST.get('Memory'))
-	    answers=memory['twilio']['collected_data']['customer']['answers']
-	    c_name=answers['first_name']['answer']
-	    c_phone=answers['phone_number']['answer']
        
     response= {
        "actions": [
@@ -141,10 +118,11 @@ def order(request):
 					}
 				],
 				"on_complete": {
-					"redirect": "https://53fe58a0bbc0.ngrok.io/bot/complete_order"
+					"redirect": "https://techwithnick.com/bot/completed_order"
 				}
 			}
-		}
+		},
+		{"remember":{'item':item, "quantity":qty, "mobile":mobile}}
 	]
     }
     return JsonResponse(response)
@@ -153,24 +131,23 @@ def order(request):
 @csrf_exempt
 def complete_order(request):
     if request.method == 'POST':
-	    shop= request.POST.get('Field_shop_name_Value')
-	    loc= request.POST.get('Field_location_Value')
-	    item = request.POST.get('Field_prod_Value')
-	    qty=request.POST.get('Field_qty_Value')
 	    memory=json.loads(request.POST.get('Memory'))
-	    answers=memory['twilio']['collected_data']['customer']['answers']
-	    c_name=answers['first_name']['answer']
-	    c_phone=answers['phone_number']['answer']
-	    print(c_name,c_phone)
+	    answers=memory['twilio']['collected_data']['order_product']['answers']
+	    answers2=memory['twilio']['collected_data']['customer']['answers']
+	    c_name=answers2['first_name']['answer']
+	    item=answers['product']['answer']
+	    quantity=answers['quantity']['answer']
+	    location=answers['location']['answer']
+	    c_phone=memory['phone']
+	    print(c_phone, item,quantity,location, c_name)
 	    x=Product.objects.get(name=item.lower())
 	    if x:
-		    total=multiply(int(x.price), int(qty))
+		    total=multiply(int(x.price), int(quantity))
 		    print(total)
 	    Order.objects.create(
 			product=x,
-			# shop=shop,
-			quantity=qty,
-			location=loc,
+			quantity=quantity,
+			location=location,
 			customer=c_name
 		)
 	
@@ -178,27 +155,78 @@ def complete_order(request):
        "actions": [
 		     
 		{
-			"say": f"Hold on a second...calculating the totals..."
+			"say": "Cool 👍🏾👍🏾 I'll help with that. "
 		},
 		{
-			"say": f"""Alright {c_name} here is your cart 🛒 and will cost KSHS {total:.2f}"""
+			"say": "Hold on as I analyse your requirements  🙇🏾‍♂️🙇🏾‍♂️. "
 		},
 		{
-			"collect": {
-				"name": "post_process",
-				"questions": [
-					{
-						"question": f"I am going to ask you to make a payment now :)",
-						"name": "true_false",
-						"type": "Twilio.YES_NO"
-					},
-                   
-				],
-				"on_complete": {
-					"redirect": "https://53fe58a0bbc0.ngrok.io/bot/make_payment"
-				}
-			}
-		}
+			"say": f"Gotcha! So you want to order {quantity} {item} to be delivered in {location}"
+			
+		},
+		{
+			"say": f"Calculating totals...⌛💰⏳"
+			
+		},
+		{
+			"say": f"""Alright {c_name} your cart 🛒 will cost KSHS 💵💵{total:.2f} """
+			
+		},
+		{
+			"say": f"Mpesa request sent to {c_phone}, please pay KSHS {total:.2f}."
+		},
+		{
+					"redirect": f"https://techwithnick.com/bot/pay"
+		},
+		{"remember":{'phone':c_phone, "total":total}}
+		
+		
+	]
+    }
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def completed_order(request):
+    if request.method == 'POST':
+	    shop= request.POST.get('Field_shop_name_Value')
+	    loc= request.POST.get('Field_location_Value')
+	    item = request.POST.get('Field_prod_Value')
+	    qty=request.POST.get('Field_qty_Value')
+	    mobile=request.POST.get('Field_mobil_Value')
+	    memory=json.loads(request.POST.get('Memory'))
+
+	    x=Product.objects.get(name=item.lower())
+	    if x:
+		    total=multiply(int(x.price), int(qty))
+		    print(total)
+	    Order.objects.create(
+			product=x,
+			quantity=qty,
+			location=loc,
+			customer=mobile
+		)
+
+
+	
+    response= {
+       "actions": [
+		
+		{
+			"say": f"Calculating totals...⌛💰⏳"
+			
+		},
+		{
+			"say": f"""Alright your cart 🛒 will cost KSHS 💵💵{total:.2f} """
+			
+		},
+		{
+			"say": f"Mpesa request sent to {mobile}, please pay KSHS {total:.2f}."
+		},
+		{
+					"redirect": f"https://techwithnick.com/bot/pay"
+		},
+		{"remember":{'phone':mobile, "total":total}}
 	]
     }
     return JsonResponse(response)
@@ -208,17 +236,10 @@ def complete_order(request):
 @csrf_exempt
 def make_payment(request):
     if request.method == 'POST':
-	    item = request.POST.get('Field_prod_Value')
-	    qty=request.POST.get('Field_qty_Value')
 	    memory=json.loads(request.POST.get('Memory'))
-	    answers=memory['twilio']['collected_data']['customer']['answers']
-	    c_name=answers['first_name']['answer']
-	    c_phone=answers['phone_number']['answer']
-	    x=Product.objects.get(name=item.lower())
-	    if x:
-		    total=multiply(int(x.price), int(qty))
-		    print(total)
-	    
+	    c_phone=memory['phone']
+	    total=memory['total']
+	    print(total,c_phone)
 	    mpesa_endpoint='https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
 	    headers={"Authorization": "Bearer %s" % get_token()}
 	    req_body={
@@ -239,44 +260,49 @@ def make_payment(request):
                   json=req_body,
                   headers=headers,
                   )
-	    return response_data.json()
-	
-    response= {
-       "actions": [
-		{
-			"say": f"An Mpesa pop up will display , please enter your PIN to authorise payment."
-		},{
-			"collect": {
-				"name": "post_process",
-				"questions": [
-					{
-						"question": f"Have you made payment ?",
-						"name": "true_false",
-						"type": "Twilio.YES_NO"
-					},
-                   
-				],
-				"on_complete": {
-					"redirect": "https://53fe58a0bbc0.ngrok.io/bot/done_deal"
-				}
-			}
-		}
-	]
-    }
-	#send notification to merchant.id, customer care
-    return JsonResponse(response)
+	    print(response_data.status_code)
+	    return HttpResponse('Issued Mpesa')
 
-
+	   
 
 @csrf_exempt
-def done_deal(request):
+def pay(request):
     if request.method == 'POST':
 	    memory=json.loads(request.POST.get('Memory'))
-	    print(memory)
+	    c_phone=memory['phone']
+	    total=memory['total']
+	    response= {
+       "actions": [
+		
+		{
+			"collect": {
+				"name": "pay_now",
+				"questions": [
+					{
+						"question": f"Proceed to pay?",
+						"name": "affirm",
+						"type": "Twilio.YES_NO"
+					}
+				],
+				"on_complete": {
+					"redirect": "https://techwithnick.com/bot/make_payment"
+				}
+			}
+		},
+		{"remember":{'phone':c_phone, "total":total}}
+	]
+    }
+    return JsonResponse(response)
+	
+@csrf_exempt
+def collect_order(request):
+    if request.method == 'POST':
+	    memory=json.loads(request.POST.get('Memory'))
+	    # print(memory)
 	    answers=memory['twilio']['collected_data']['customer']['answers']
 	    c_name=answers['first_name']['answer']
 	    c_phone=answers['phone_number']['answer']
-	    print(c_name,c_phone)
+	    # print(c_name,c_phone)
 	    response= {
        "actions": [
 		   {
@@ -288,7 +314,39 @@ def done_deal(request):
 			"say": {
 				"speech": f"{message}"
 			}
-		}	
+		},
+		{
+			"collect": {
+				"name": "order_product",
+				"questions": [
+					{
+						"question": f"What product would you like to order?",
+						"name": "product",
+						"type": "Twilio.FIRST_NAME"
+					},
+                    {
+						"question": f"The quantity you need?",
+						"name": "quantity",
+						"type": "Twilio.NUMBER"
+					},
+					 {
+						"question": f"Where should your order be delivered?",
+						"name": "location",
+						"type": "Twilio.CITY"
+					}
+				],
+				"on_complete": {
+					"redirect": "https://techwithnick.com/bot/complete_order"
+				}
+			}
+		},
+		
+		{
+			"remember": {
+				"phone": c_phone,
+				"name": c_name
+			}
+		}		
 		
 	]
     }
@@ -312,7 +370,7 @@ def get_shop_poster(request):
 				"images": [
 					{
 						"label": f"{shop}'s products",
-						"url": 'https://53fe58a0bbc0.ngrok.io/media/images/Kakila.jpg'#make it dynamic
+						"url": 'https://techwithnick.com/media/images/Kakila.jpg'#make it dynamic
 					}
 				],
 				"body": f"{shop}'s products",
@@ -342,10 +400,10 @@ def push(request):
     "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMTgwNDA5MDkzMDAy",
     "Timestamp": "20180409093002",
     "TransactionType": "CustomerPayBillOnline",
-    "Amount": "1",
+    "Amount": 1,
     "PartyA": "254713754946",
     "PartyB": "174379",
-    "PhoneNumber": "254743236834",
+    "PhoneNumber": 254713754946,
     "CallBackURL":base_url + "/c2b/confirm",
     "AccountReference": "account",
     "TransactionDesc": "test" ,
@@ -355,7 +413,8 @@ def push(request):
         json=req_body,
         headers=headers,
     )
-    return response_data.json()
+    print(response_data.status_code)
+    return HttpResponse('Issued Mpesa')
 
 
 def token():
