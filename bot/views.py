@@ -347,7 +347,7 @@ def collect_order(request):
                                 "say": "Please type only the product name as one word."
                                 },
 								{
-                                "say": f"Reply with one of these 😊: {products[0]},{products[1]},{products[2]},{products[3]},{products[4]}"
+                                "say": f"Reply with one of these 😊: \n {products[0]} \n {products[1]} \n {products[2]} \n {products[3]} \n {products[4]}"
                                 }
                                 ]
 							},
