@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('push', views.push),
     path('shops', views.shops),
-     path('pay', views.pay),
+    path('pay', views.pay),
+    path('commands', views.commands),
 ]
 

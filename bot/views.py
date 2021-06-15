@@ -240,6 +240,12 @@ def make_payment(request):
 	    c_phone=memory['phone']
 	    total=memory['total']
 	    print(total,c_phone)
+	    answers=memory['twilio']['collected_data']['pay_now']['answers']
+	    jibu=answers['affirm']['answer']
+	    if jibu=='YES':
+		    pass #push stk to user
+	    else:
+		    pass #bot says you chose to pay on delivery order sent
 	    mpesa_endpoint='https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
 	    headers={"Authorization": "Bearer %s" % get_token()}
 	    req_body={
@@ -311,18 +317,37 @@ def collect_order(request):
 			}
 		},
 		{
-			"say": {
-				"speech": f"{message}"
-			}
-		},
-		{
 			"collect": {
 				"name": "order_product",
 				"questions": [
 					{
 						"question": f"What product would you like to order?",
 						"name": "product",
-						"type": "Twilio.FIRST_NAME"
+						"type": "Twilio.FIRST_NAME",
+						"validate": {
+							"allowed_values": {
+								"list": [
+                                           "mangoes",
+                                            "tomatoes",
+                                            "onions",
+                                            "cabbages",
+											"carrots"
+                                        ]
+							},
+							"on_failure": {
+								[
+                                 {
+                                "say": "Please type only the product name as one word."
+                                }
+                                ],
+								{"repeat_question": 'true'},
+							},
+							 "max_attempts": {
+								"redirect": "https://techwithnick.com/bot/commands",
+                                "num_attempts": 3
+							 },
+						},
+						
 					},
                     {
 						"question": f"The quantity you need?",
@@ -348,6 +373,20 @@ def collect_order(request):
 			}
 		}		
 		
+	]
+    }
+    return JsonResponse(response)
+
+@csrf_exempt
+def commands(request):
+    if request.method == 'POST':
+	    response= {
+       "actions": [
+		{
+			"say": {
+				"speech": f"{message}"
+			}
+		},	
 	]
     }
     return JsonResponse(response)
