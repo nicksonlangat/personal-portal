@@ -338,9 +338,8 @@ def collect_order(request):
 								"messages":[
                                  {
                                 "say": "Please type only the product name as one word."
-                                },
-								{"repeat_question": 'true'},
-                                ],
+                                }
+                                ]
 							},
 							 "max_attempts": {
 								"redirect": "https://techwithnick.com/bot/commands",
