@@ -135,52 +135,52 @@ def complete_order(request):
     if request.method == 'POST':
 	    memory=json.loads(request.POST.get('Memory'))
 	    answers=memory['twilio']['collected_data']['order_product']['answers']
-	    answers2=memory['twilio']['collected_data']['customer']['answers']
-	    c_name=answers2['first_name']['answer']
-	    item=answers['product']['answer']
-	    quantity=answers['quantity']['answer']
+	    # answers2=memory['twilio']['collected_data']['customer']['answers']
+	    # c_name=answers2['first_name']['answer']
+	    # item=answers['product']['answer']
+	    # quantity=answers['quantity']['answer']
 	    location=answers['location']['answer']
 	    c_phone=memory['phone']
-	    print(c_phone, item,quantity,location, c_name)
-	    x=Product.objects.get(name=item.lower())
-	    if x:
-		    total=multiply(int(x.price), int(quantity))
-		    print(total)
-	    Order.objects.create(
-			product=x,
-			quantity=quantity,
-			location=location,
-			customer=c_name
-		)
+	    # print(c_phone, item,quantity,location, c_name)
+	    # x=Product.objects.get(name=item.lower())
+	    # if x:
+		#     total=multiply(int(x.price), int(quantity))
+		#     print(total)
+	    # Order.objects.create(
+		# 	product=x,
+		# 	quantity=quantity,
+		# 	location=location,
+		# 	customer=c_name
+		# )
 	
     response= {
        "actions": [
 		     
 		{
-			"say": "Cool 👍🏾👍🏾 I'll help with that. "
+			"say": f"{location}, Cool 👍🏾👍🏾 I'll help with that. "
 		},
 		{
 			"say": "Hold on as I analyse your requirements  🙇🏾‍♂️🙇🏾‍♂️. "
 		},
-		{
-			"say": f"Gotcha! So you want to order {quantity} {item} to be delivered in {location}"
+		# {
+		# 	"say": f"Gotcha! So you want to order {quantity} {item} to be delivered in {location}"
 			
-		},
+		# },
 		{
 			"say": f"Calculating totals...⌛💰⏳"
 			
 		},
-		{
-			"say": f"""Alright {c_name} your cart 🛒 will cost KSHS 💵💵{total:.2f} """
+		# {
+		# 	"say": f"""Alright {c_name} your cart 🛒 will cost KSHS 💵💵{total:.2f} """
 			
-		},
-		{
-			"say": f"Mpesa request sent to {c_phone}, please pay KSHS {total:.2f}."
-		},
+		# },
+		# {
+		# 	"say": f"Mpesa request sent to {c_phone}, please pay KSHS {total:.2f}."
+		# },
 		{
 					"redirect": f"https://techwithnick.com/bot/pay"
 		},
-		{"remember":{'phone':c_phone, "total":total}}
+		{"remember":{'phone':c_phone, "total":'ff'}}
 		
 		
 	]
