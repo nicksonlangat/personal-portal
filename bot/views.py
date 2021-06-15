@@ -20,11 +20,13 @@ def multiply(num1, num2):
 message= emoji.emojize("""
 *Some commands you can give me:* :sunglasses:
 
-:heavy_check_mark: *[sasa][hey][hi][hello][vipi]*: Place your order:wave:
+:heavy_check_mark: *[sasa][hey][hi][hello][vipi]*: Greet me and place your order:wave:
 
 :heavy_check_mark: *'merchants':* Get a list of all merchants available on Kwyk :hotel:
 
 :heavy_check_mark: *[quantity][product][merchant][location][phone]*: Start ordering process:tada:
+
+:heavy_check_mark: *Example 1*: 3 mangoes Kakila Nairobi 254712754946 :tada:
 
 :heavy_check_mark: *[shop name]*: Get posters of products sold by that shop :convenience_store:
 """, use_aliases=True)
