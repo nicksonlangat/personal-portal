@@ -389,44 +389,47 @@ def continue_collect_order(request):
 		},
 		{
 			"collect": {
-				"name": "order_product",
+				"name": "ordered_product",
 				"questions": [
 					{
-						"question": f"What product would you like to order?",
-						"name": "product",
-						"type": "Twilio.FIRST_NAME",
-						"validate": {
-							"allowed_values": {
-								"list": [
-											products[0],
-											products[1],
-											products[2],
-											products[3],
-											products[4]
-                                        ]
-							},
-							"on_failure": {
-								"messages":[
-                                 {
-                                "say": "Please type only the product name as one word."
-                                },
-								{
-                                "say": f"Reply with one of these 😊:\n {products[0]}\n {products[1]}\n {products[2]}\n {products[3]}\n {products[4]}"
-                                }
-                                ]
-							},
-							 "max_attempts": {
-								"redirect": "https://techwithnick.com/bot/commands",
-                                "num_attempts": 3
-							 },
-						},
-						
-					},
-                    {
-						"question": f"The quantity you need?",
-						"name": "quantity",
-						"type": "Twilio.NUMBER"
-					},
+						"question": f"What products would you like to order?",
+						"name": "products",
+					}
+				],
+				"on_complete": {
+					"redirect": "https://techwithnick.com/bot/almost_complete_order"
+				}
+			}
+		},
+		
+		{
+			"remember": {
+				"phone": c_phone,
+				"name": c_name,
+				'shop':selected_shop
+			}
+		}		
+		
+	]
+    }
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def almost_complete_order(request):
+    if request.method == 'POST':
+	    memory=json.loads(request.POST.get('Memory'))
+	    answers=memory['twilio']['collected_data']['ordered_product']['answers']
+	    utterance=answers['products']['answer']
+	    c_phone=memory['phone']
+	    c_name=memory['phone']
+
+	    response= {
+       "actions": [
+		{
+			"collect": {
+				"name": "order_product",
+				"questions": [
 					 {
 						"question": f"Where should your order be delivered?",
 						"name": "location",
@@ -443,7 +446,7 @@ def continue_collect_order(request):
 			"remember": {
 				"phone": c_phone,
 				"name": c_name,
-				'shop':selected_shop
+				'shop':utterance
 			}
 		}		
 		

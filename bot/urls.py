@@ -19,6 +19,7 @@ urlpatterns = [
     path('shops', views.shops),
     path('pay', views.pay),
     path('commands', views.commands),
-    path('continue_collect_order', views.continue_collect_order)
+    path('continue_collect_order', views.continue_collect_order),
+    path('almost_complete_order', views.almost_complete_order)
 ]
 
