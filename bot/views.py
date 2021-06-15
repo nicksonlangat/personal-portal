@@ -34,6 +34,8 @@ message= emoji.emojize("""
 @csrf_exempt
 def start_up(request):
     if request.method == 'POST':
+		   incoming_msg = request.POST['Body'].lower()
+		   print(incoming_msg)
 		   response={
        "actions": [
 		{
