@@ -326,9 +326,25 @@ def collect_order(request):
 			}
 		},
 		{
+			"show": {
+				"images": [
+					{
+						"label": f"Here are our shops",
+						"url": 'https://techwithnick.com/media/images/Whats_app_order_1.jpg'#make it dynamic
+					}
+				],
+				"body": f"Here are our shops",
+			}
+		},
+		{
 			"collect": {
 				"name": "order_product",
 				"questions": [
+					 {
+						"question": f"Which shop would you like to order from?",
+						"name": "shop",
+						"type": "Twilio.FIRST_NAME"
+					},
 					{
 						"question": f"What product would you like to order?",
 						"name": "product",
