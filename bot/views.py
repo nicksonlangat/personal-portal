@@ -324,30 +324,6 @@ def collect_order(request):
 						"question": f"What product would you like to order?",
 						"name": "product",
 						"type": "Twilio.FIRST_NAME",
-						"validate": {
-							"allowed_values": {
-								"list": [
-                                           "mangoes",
-                                            "tomatoes",
-                                            "onions",
-                                            "cabbages",
-											"carrots"
-                                        ]
-							},
-							"on_failure": {
-								[
-                                 {
-                                "say": "Please type only the product name as one word."
-                                }
-                                ],
-								{"repeat_question": 'true'},
-							},
-							 "max_attempts": {
-								"redirect": "https://techwithnick.com/bot/commands",
-                                "num_attempts": 3
-							 },
-						},
-						
 					},
                     {
 						"question": f"The quantity you need?",
