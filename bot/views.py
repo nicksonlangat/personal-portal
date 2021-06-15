@@ -299,7 +299,14 @@ def pay(request):
 	]
     }
     return JsonResponse(response)
-	
+
+products=[
+        "mangoes",
+        "tomatoes",
+        "onions",
+        "cabbages",
+        "carrots"]
+
 @csrf_exempt
 def collect_order(request):
     if request.method == 'POST':
@@ -327,17 +334,20 @@ def collect_order(request):
 						"validate": {
 							"allowed_values": {
 								"list": [
-                                           "mangoes",
-                                            "tomatoes",
-                                            "onions",
-                                            "cabbages",
-											"carrots"
+											products[0],
+											products[1],
+											products[2],
+											products[3],
+											products[4]
                                         ]
 							},
 							"on_failure": {
 								"messages":[
                                  {
                                 "say": "Please type only the product name as one word."
+                                },
+								{
+                                "say": f"Reply with one of these 😊: {products[0]},{products[1]},{products[2]},{products[3]},{products[4]}"
                                 }
                                 ]
 							},
