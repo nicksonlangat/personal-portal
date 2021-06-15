@@ -338,13 +338,59 @@ def collect_order(request):
 		},
 		{
 			"collect": {
-				"name": "order_product",
+				"name": "orders_product",
 				"questions": [
 					 {
 						"question": f"Which shop would you like to order from?",
 						"name": "shop",
 						"type": "Twilio.FIRST_NAME"
 					},
+				],
+				"on_complete": {
+					"redirect": "https://techwithnick.com/bot/continue_collect_order"
+				}
+			}
+		},
+		
+		{
+			"remember": {
+				"phone": c_phone,
+				"name": c_name
+			}
+		}		
+		
+	]
+    }
+    return JsonResponse(response)
+
+
+
+@csrf_exempt
+def continue_collect_order(request):
+    if request.method == 'POST':
+	    memory=json.loads(request.POST.get('Memory'))
+	    answers=memory['twilio']['collected_data']['orders_product']['answers']
+	    selected_shop=answers['shop']['answer']
+	    c_phone=memory['phone']
+	    c_name=memory['phone']
+
+	    response= {
+       "actions": [
+		{
+			"show": {
+				"images": [
+					{
+						"label": f"Here are {selected_shop}'s products ",
+						"url": 'https://techwithnick.com/media/images/Kakila.jpg'#make it dynamic
+					}
+				],
+				"body": f"Here are {selected_shop}'s products ",
+			}
+		},
+		{
+			"collect": {
+				"name": "order_product",
+				"questions": [
 					{
 						"question": f"What product would you like to order?",
 						"name": "product",
@@ -396,7 +442,8 @@ def collect_order(request):
 		{
 			"remember": {
 				"phone": c_phone,
-				"name": c_name
+				"name": c_name,
+				'shop':selected_shop
 			}
 		}		
 		
