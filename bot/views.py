@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 import requests
 from requests.auth import HTTPBasicAuth
-
+import spacy
 
 def multiply(num1, num2):
 	answer=num1 * num2
@@ -135,23 +135,60 @@ def complete_order(request):
     if request.method == 'POST':
 	    memory=json.loads(request.POST.get('Memory'))
 	    answers=memory['twilio']['collected_data']['order_product']['answers']
-	    # answers2=memory['twilio']['collected_data']['customer']['answers']
-	    # c_name=answers2['first_name']['answer']
-	    # item=answers['product']['answer']
-	    # quantity=answers['quantity']['answer']
 	    location=answers['location']['answer']
 	    c_phone=memory['phone']
+	    c_name=memory['name']
+	    sentence=memory['sentence']
+	    nlp = spacy.load('en_core_web_sm')
+	    about_text = sentence
+	    about_doc = nlp(about_text)
+	    nouns = []
+	    for token in about_doc:
+		    if token.pos_ == 'NOUN':
+			    nouns.append(token)
+	    nums=[int(s) for s in about_text.split() if s.isdigit()]
+	    if nouns[0]:
+		    prod_0=Product.objects.get(name=nouns[0])
+	    if nouns[1]:
+	        prod_1=Product.objects.get(name=nouns[1])
+	    if nouns[2]:
+	        prod_2=Product.objects.get(name=nouns[2])
+	    if nums[0]:
+		    qt_0=nums[0]
+	    if nums[1]:
+		    qt_1=nums[1]
+	    if nums[2]:
+		    qt_2=nums[2]
+
+
 	    # print(c_phone, item,quantity,location, c_name)
 	    # x=Product.objects.get(name=item.lower())
-	    # if x:
-		#     total=multiply(int(x.price), int(quantity))
-		#     print(total)
-	    # Order.objects.create(
-		# 	product=x,
-		# 	quantity=quantity,
-		# 	location=location,
-		# 	customer=c_name
-		# )
+	    if prod_0:
+		    total_0=multiply(int(prod_0.price), int(qt_0))
+	    if prod_1:
+		    total_1=multiply(int(prod_1.price), int(qt_1))
+	    if prod_2:
+		    total_2=multiply(int(prod_2.price), int(qt_2))
+	    total=total_0 + total_1 + total_2
+		
+	    Order.objects.create(
+			product=prod_0,
+			quantity=qt_0,
+			location=location,
+			customer=c_name
+		)
+	    Order.objects.create(
+			product=prod_1,
+			quantity=qt_1,
+			location=location,
+			customer=c_name
+		)
+	    Order.objects.create(
+			product=prod_2,
+			quantity=qt_2,
+			location=location,
+			customer=c_name
+		)
 	
     response= {
        "actions": [
@@ -170,17 +207,17 @@ def complete_order(request):
 			"say": f"Calculating totals...⌛💰⏳"
 			
 		},
-		# {
-		# 	"say": f"""Alright {c_name} your cart 🛒 will cost KSHS 💵💵{total:.2f} """
+		{
+			"say": f"""Alright {c_name} your cart 🛒 will cost KSHS 💵💵{total:.2f} """
 			
-		# },
-		# {
-		# 	"say": f"Mpesa request sent to {c_phone}, please pay KSHS {total:.2f}."
-		# },
+		},
+		{
+			"say": f"Mpesa request sent to {c_phone}, please pay KSHS {total:.2f}."
+		},
 		{
 					"redirect": f"https://techwithnick.com/bot/pay"
 		},
-		{"remember":{'phone':c_phone, "total":'ff'}}
+		{"remember":{'phone':c_phone, "total":total}}
 		
 		
 	]
@@ -446,7 +483,7 @@ def almost_complete_order(request):
 			"remember": {
 				"phone": c_phone,
 				"name": c_name,
-				'shop':utterance
+				'sentence':utterance
 			}
 		}		
 		
