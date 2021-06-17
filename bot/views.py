@@ -163,29 +163,29 @@ def complete_order(request):
 		    if token.pos_ == 'NOUN':
 			    nouns.append(token)
 	    nums=[int(s) for s in about_text.split() if s.isdigit()]
-	    if nouns[0]:
+	    try:
 		    prod_0=Product.objects.get(name=nouns[0])
-	    else:
+	    except IndexError:
 		    prod_0=Product.objects.get(name='default')
-	    if nouns[1]:
+	    try:
 	        prod_1=Product.objects.get(name=nouns[1])
-	    else:
+	    except IndexError:
 		    prod_1=Product.objects.get(name='default')
-	    if nouns[2]:
+	    try:
 	        prod_2=Product.objects.get(name=nouns[2])
-	    else:
+	    except IndexError:
 		    prod_2=Product.objects.get(name='default')
-	    if nums[0]:
+	    try:
 		    qt_0=nums[0]
-	    else:
+	    except IndexError:
 		    qt_0=0
-	    if nums[1]:
+	    try:
 		    qt_1=nums[1]
-	    else:
+	    except IndexError:
 		    qt_1=0
-	    if nums[2]:
+	    try:
 		    qt_2=nums[2]
-	    else:
+	    except IndexError:
 		    qt_2=0
 
 
