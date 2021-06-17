@@ -165,16 +165,28 @@ def complete_order(request):
 	    nums=[int(s) for s in about_text.split() if s.isdigit()]
 	    if nouns[0]:
 		    prod_0=Product.objects.get(name=nouns[0])
+	    else:
+		    prod_0=Product.objects.get(name='default')
 	    if nouns[1]:
 	        prod_1=Product.objects.get(name=nouns[1])
+	    else:
+		    prod_1=Product.objects.get(name='default')
 	    if nouns[2]:
 	        prod_2=Product.objects.get(name=nouns[2])
+	    else:
+		    prod_2=Product.objects.get(name='default')
 	    if nums[0]:
 		    qt_0=nums[0]
+	    else:
+		    qt_0=0
 	    if nums[1]:
 		    qt_1=nums[1]
+	    else:
+		    qt_1=0
 	    if nums[2]:
 		    qt_2=nums[2]
+	    else:
+		    qt_2=0
 
 
 	    # print(c_phone, item,quantity,location, c_name)
