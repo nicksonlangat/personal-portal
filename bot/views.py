@@ -176,6 +176,10 @@ def complete_order(request):
 	    except IndexError:
 		    prod_2=Product.objects.get(name='default')
 	    try:
+	        prod_3=Product.objects.get(name=nouns[2])
+	    except IndexError:
+		    prod_3=Product.objects.get(name='default')
+	    try:
 		    qt_0=nums[0]
 	    except IndexError:
 		    qt_0=0
@@ -187,7 +191,10 @@ def complete_order(request):
 		    qt_2=nums[2]
 	    except IndexError:
 		    qt_2=0
-
+	    try:
+		    qt_3=nums[3]
+	    except IndexError:
+		    qt_3=0
 
 	    # print(c_phone, item,quantity,location, c_name)
 	    # x=Product.objects.get(name=item.lower())
@@ -217,6 +224,21 @@ def complete_order(request):
 			location=location,
 			customer=c_name
 		)
+	    Order.objects.create(
+			product=prod_3,
+			quantity=qt_3,
+			location=location,
+			customer=c_name
+		)
+	    endpoint='https://api.sms.to/sms/send'
+	    auth_token='30KY3acPpY8q7i8diA4MKCgOFUsZnhYE'
+	    headers = {'Authorization': 'Bearer ' + auth_token}
+	    payload = {
+			"message" : f"Dear merchant, {c_name} just placed an order of KSHS {total}. Here is their mobile number {c_phone}.", 
+			"to" : "+254713754946", 
+			"sender_id" : "SMSto"
+               }
+	    res=requests.post(endpoint,headers=headers,data=payload)
 	
     response= {
        "actions": [
