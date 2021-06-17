@@ -8,6 +8,7 @@ router.register(r'images', views.ImageViewset)
 
 urlpatterns = [
     path('', views.start_up),
+    path('start', views.start),
     path('place_order', views.place_order),
     path('complete_order', views.complete_order),
     path('completed_order', views.completed_order),

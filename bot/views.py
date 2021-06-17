@@ -32,6 +32,22 @@ message= emoji.emojize("""
 """, use_aliases=True)
 
 @csrf_exempt
+def start(request):
+    if request.method == 'POST':
+	    phone= request.POST['From']
+	    speech=request.POST['Body'].lower()
+	    response={
+       "actions": [
+		{
+			"say": {
+				"speech": f"Hello there {phone}, you said {speech}"
+			}
+		},
+	]
+    }
+    return JsonResponse(response)
+
+@csrf_exempt
 def start_up(request):
     if request.method == 'POST':
 		   response={
