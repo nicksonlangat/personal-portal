@@ -257,7 +257,7 @@ def complete_order(request):
 			"say": f"{location}, Cool 👍🏾👍🏾 I'll help with that. "
 		},
 		{
-			"say": "Hold on as I analyse your requirements  🙇🏾‍♂️🙇🏾‍♂️. "
+			"say": "Hold on as I process your requirements  🙇🏾‍♂️🙇🏾‍♂️. "
 		},
 		# {
 		# 	"say": f"Gotcha! So you want to order {quantity} {item} to be delivered in {location}"
