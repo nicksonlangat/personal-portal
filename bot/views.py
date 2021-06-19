@@ -272,7 +272,7 @@ def complete_order(request):
 			
 		},
 		{
-			"say": f"Mpesa request sent to {c_phone}, please pay KSHS {total:.2f}."
+			"say": f"Mpesa request will be sent to {c_phone}, please pay KSHS {total:.2f}."
 		},
 		{
 					"redirect": f"https://techwithnick.com/bot/pay"
