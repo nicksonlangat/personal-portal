@@ -238,6 +238,16 @@ def complete_order(request):
 			"to" : "+254713754946", 
 			"sender_id" : "SMSto"
                }
+	    payload2 = {
+			"message" : f"Dear rider head over to Kakila organic ,there is a delivery job for you.", 
+			"to" : "+25492793366", 
+			"sender_id" : "SMSto"
+               }
+	    payload3 = {
+			"message" : f"An order was placed by {c_name} number {c_phone}.", 
+			"to" : "+25492793366", 
+			"sender_id" : "SMSto"
+               }
 	    res=requests.post(endpoint,headers=headers,data=payload)
 	
     response= {
@@ -335,6 +345,11 @@ def make_payment(request):
 		    pass #push stk to user
 	    else:
 		    pass #bot says you chose to pay on delivery order sent
+	    # phone_number=str(c_phone)
+	    code=254
+	    minus= c_phone.lstrip(c_phone[0])
+	    final_num=f'{code}{minus}'
+		
 	    mpesa_endpoint='https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
 	    headers={"Authorization": "Bearer %s" % get_token()}
 	    req_body={
@@ -345,7 +360,7 @@ def make_payment(request):
                  "Amount": total,
                  "PartyA": "254743236834",
                  "PartyB": "174379",
-                 "PhoneNumber": c_phone,
+                 "PhoneNumber": final_num,
                  "CallBackURL":base_url,
                  "AccountReference": "account",
                  "TransactionDesc": "test" ,
@@ -509,7 +524,7 @@ def almost_complete_order(request):
 	    answers=memory['twilio']['collected_data']['ordered_product']['answers']
 	    utterance=answers['products']['answer']
 	    c_phone=memory['phone']
-	    c_name=memory['phone']
+	    c_name=memory['name']
 
 	    response= {
        "actions": [
