@@ -62,12 +62,12 @@ def start_up(request):
 				"name": "customer",
 				"questions": [
 					{
-						"question": f"What is your name?",
+						"question": f"What's your name?",
 						"name": "first_name",
 						"type": "Twilio.FIRST_NAME"
 					},
                     {
-						"question": f"Great, your phone number is?",
+						"question": f"Great, what's your phone number?",
 						"name": "phone_number",
 						"type": "Twilio.NUMBER"
 					}
@@ -118,7 +118,7 @@ def place_order(request):
 			"say": "Cool 👍🏾👍🏾 I'll help with that. "
 		},
 		{
-			"say": "Hold on as I analyse your requirements  🙇🏾‍♂️🙇🏾‍♂️. "
+			"say": "Hold on as I process your requirements  🙇🏾‍♂️🙇🏾‍♂️. "
 		},
 		{
 			"collect": {
@@ -474,7 +474,7 @@ def continue_collect_order(request):
 	    answers=memory['twilio']['collected_data']['orders_product']['answers']
 	    selected_shop=answers['shop']['answer']
 	    c_phone=memory['phone']
-	    c_name=memory['phone']
+	    c_name=memory['name']
 
 	    response= {
        "actions": [
