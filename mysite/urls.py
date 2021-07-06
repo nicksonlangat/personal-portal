@@ -8,4 +8,6 @@ urlpatterns = [
     path('', include('portfolio.urls')),
     path('budgeting/api/v1/', include('budgeting.urls')),
     path('bot/', include('bot.urls')),
+    path('tasks/', include('tasks.urls')),
+    path('blogs/', include('blogs.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

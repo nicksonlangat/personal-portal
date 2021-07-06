@@ -92,7 +92,7 @@ def shops(request):
 				"images": [
 					{
 						"label": f"Here are our Merchants",
-						"url": 'https://techwithnick.com/media/images/Whats_app_order_1.jpg'#make it dynamic
+						"url": 'https://techwithnick.com/media/images/Whats_app_order_1_2.jpg'#make it dynamic
 					}
 				],
 				"body": f"Here are our Merchants",
@@ -432,7 +432,7 @@ def collect_order(request):
 				"images": [
 					{
 						"label": f"Here are our shops",
-						"url": 'https://techwithnick.com/media/images/Whats_app_order_1.jpg'#make it dynamic
+						"url": 'https://techwithnick.com/media/images/Whats_app_order_1_2.jpg'#make it dynamic
 					}
 				],
 				"body": f"Here are our shops",
