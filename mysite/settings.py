@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'bot',
     'tasks',
     'blogs',
+    'events',
     'rest_framework',
      'corsheaders',
       'django_filters',

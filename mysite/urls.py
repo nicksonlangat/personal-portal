@@ -10,4 +10,5 @@ urlpatterns = [
     path('bot/', include('bot.urls')),
     path('tasks/', include('tasks.urls')),
     path('blogs/', include('blogs.urls')),
+     path('events/', include('events.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
