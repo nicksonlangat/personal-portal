@@ -19,7 +19,7 @@ class Constituency(models.Model):
 
 class Ward(models.Model):
     constituency=models.ForeignKey(Constituency, on_delete=models.CASCADE)
-    name=models.CharField(max_length=250, unique=True)
+    name=models.CharField(max_length=250)
     date=models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
