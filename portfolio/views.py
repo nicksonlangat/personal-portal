@@ -16,7 +16,7 @@ def download(request):
     raise Http404
 
 def portal_index(request):
-    projects=Project.objects.all()
+    projects=Project.objects.filter(is_published=True)
     posts = requests.get('https://dev.to/api/articles?username=nick_langat').json()
     context={
         'projects':projects,

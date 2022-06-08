@@ -7,6 +7,7 @@ class Project(models.Model):
     image=models.ImageField(upload_to='PROJECTS')
     live_link=models.CharField(max_length=100)
     code_link=models.CharField(max_length=100)
+    is_published = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
