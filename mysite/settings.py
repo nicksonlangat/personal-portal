@@ -34,15 +34,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'portfolio',
-    'budgeting',
     'bot',
-    'tasks',
-    'blogs',
-    'events',
+    'cards',
     'locations',
     'rest_framework',
-     'corsheaders',
-      'django_filters',
+    'corsheaders',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

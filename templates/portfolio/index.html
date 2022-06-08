@@ -53,16 +53,16 @@
           <a title="home" href="/">
             <img src="{% static 'img/codelogo_v2.svg' %}" alt="logo"
           /></a>
-          <h1>Nickson Langat</h1>
+          <h1>Nick Langat</h1>
           <button class="btn-light" onclick="swapStyle('light.css')">Light</button>
           <button class="btn-dark" onclick="swapStyle('dark.css')">Dark</button>
         </div>
         <ul>
           
           <li><a href="#projects">Projects</a></li>
-          {% for x in resume %}
-          <li><a href="{{x.resume.url}}">Résumé</a></li>
-          {% endfor %}
+         
+          <li><a href="{% url 'resume' %}">Résumé</a></li>
+          
      
           <li><a href="#contact">Hire Me</a></li>
         
@@ -71,17 +71,16 @@
     </header>
     <section class="intro">
       <div class="intro-text">
-        <h4>Nickson Langat</h4>
+        <h4>Nick Langat</h4>
         <h4>
-          Full Stack <strong>web</strong> and <strong>mobile</strong> <br />
-          Apps Developer:
-          <p>Python,JavaScript, Typescript,</p>
-          <p>Django,Flask,,Angular,Vue,</p>
-          <p>Ionic,Flutter,HTML,CSS.</p>
+          Full Stack Software Engineer:
+          <p>Python,Golang,JavaScript,Typescript,</p>
+          <p>Django,DRF,FastAPI,Flask,</p>
+          <p>Angular,Ionic,Vue,Tailwind.</p>
         </h4>
     
         <p>
-          I'm a fullstack software developer who enjoys crafting breathtaking cross platform applications in order to solve real world day to day problems.
+          I'm a fullstack software engineer who enjoys crafting breathtaking cross platform applications in order to solve real world day to day problems.
           I'm always seeking opportunities for growth and development and I relish a challenge.
           I'm passionate about the accessibility of tech, secure coding and mental health awareness.
           I look forward to working on a team that is passionate about their product.
@@ -456,6 +455,24 @@
         {% endfor %}
       </div>
     </section>
+    <section id="projects">
+      <h2>My Articles</h2>
+      <div class="projects-container">
+        {% for obj in posts %}
+        <div class="gym-site">
+         
+          <h3>{{obj.title}}</h3>
+          <p>{{obj.description}}</p>
+          <div class="button-container">
+            <a href="https://dev.to{{obj.path}}" target="_blank"
+              >Read Article</a
+            >
+          </div>
+          
+        </div>
+        {% endfor %}
+      </div>
+    </section>
     <!-- <section id="resume">
       <div class="col-md-12">
         <iframe src="{% static 'Nick.pdf' %}" width="100%" height="650px"></iframe>
@@ -554,7 +571,7 @@
     </section>
     <footer>
       <img src="{% static 'img/codelogo_v2.svg' %}" alt="" />
-      <h4>Nickson Langat &copy;2021</h4>
+      <h4>Nick Langat &copy;2022</h4>
     </footer>
     <!-- logic for dark theme -->
     <script type="text/javascript">
