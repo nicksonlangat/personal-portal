@@ -131,6 +131,7 @@ env.bak/
 venv.bak/
 media/images/
 media/PROJECTS/
+media/media/finance/
 
 # Spyder project settings
 .spyderproject
