@@ -10,7 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields=['id','category','created_at']
+        fields=['id','category','amount','created_at']
 
     def to_representation(self, instance):
         rep = super(ItemSerializer, self).to_representation(instance)
