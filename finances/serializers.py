@@ -14,5 +14,5 @@ class ItemSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         rep = super(ItemSerializer, self).to_representation(instance)
-        rep['category'] = instance.category.name
+        rep['category'] = CategorySerializer(instance.category).data
         return rep
