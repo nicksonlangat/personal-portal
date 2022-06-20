@@ -7,4 +7,6 @@ router.register(r'categories', views.CategoryViewset)
 router.register(r'items', views.ItemViewset)
 
 urlpatterns = [
-    path('', include(router.urls)),]
+    path('', include(router.urls)),
+    path('data',views.CombinedData.as_view(),name='data'),
+    ]

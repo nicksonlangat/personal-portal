@@ -19,3 +19,56 @@ class ItemViewset(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['category__id']
     search_fields = ['category']
+
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from django.db.models import Sum
+from datetime import datetime
+
+class CombinedData(APIView):
+    permission_classes = [AllowAny,]
+    def get(self, request, format=None):
+        # x = Item.objects.values('category').annotate(total=Sum('amount'))
+        # print(x)
+        currentMonth = datetime.now().month
+        prevMonth = currentMonth - 1
+        categories = Category.objects.all()
+        current_data = []
+        last_data = []
+        all_data = []
+        for category in categories:
+            sum = Item.objects.filter(
+                category=category, 
+                created_at__month=currentMonth
+                ).aggregate(Sum('amount'))['amount__sum']
+            current_data.append(
+                {
+                    "category":category.name,
+                    "sum":0 if sum is None else sum
+                }
+            )
+            sum = Item.objects.filter(
+                category=category, 
+                created_at__month=prevMonth
+                ).aggregate(Sum('amount'))['amount__sum']
+            last_data.append(
+                {
+                    "category":category.name,
+                    "sum":0 if sum is None else sum
+                }
+            )
+            sum = Item.objects.filter(category=category).aggregate(Sum('amount'))['amount__sum']
+            all_data.append(
+                {
+                    "category":category.name,
+                    "sum":0 if sum is None else sum
+                }
+            )
+        return Response({
+            "current":current_data,
+            "previous":last_data,
+            "all":all_data
+        })
+
+    
