@@ -14,7 +14,7 @@ class CategoryViewset(viewsets.ModelViewSet):
     search_fields = ['name']
 
 class ItemViewset(viewsets.ModelViewSet):
-    queryset=Item.objects.select_related('category')
+    queryset=Item.objects.select_related('category').order_by('-created_at')
     serializer_class=ItemSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['category__id']
