@@ -1,4 +1,9 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from django.db.models import Sum
+from datetime import datetime
 from rest_framework import viewsets, filters
 from .models import Category, Item
 from .serializers import (
@@ -19,12 +24,6 @@ class ItemViewset(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['category__id']
     search_fields = ['category']
-
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from django.db.models import Sum
-from datetime import datetime
 
 class CombinedData(APIView):
     permission_classes = [AllowAny,]

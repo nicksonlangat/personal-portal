@@ -4,6 +4,13 @@ import requests
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
+from rest_framework import viewsets, serializers
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = "__all__"
 
 # Create your views here.
 def download(request):
@@ -23,3 +30,8 @@ def portal_index(request):
         'posts':posts
     }
     return render(request, 'portfolio/index.html', context)
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.filter(is_published=True)
+    serializer_class = ProjectSerializer
