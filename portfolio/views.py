@@ -4,7 +4,8 @@ import requests
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
-from rest_framework import viewsets, serializers
+from rest_framework import viewsets, serializers, filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -35,3 +36,6 @@ def portal_index(request):
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.filter(is_published=True)
     serializer_class = ProjectSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['is_clone',]
+    search_fields = ['name']
