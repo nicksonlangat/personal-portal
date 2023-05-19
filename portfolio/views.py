@@ -60,7 +60,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
    
 class NotificationViewSet(viewsets.ModelViewSet):
-    queryset = Notification.objects.filter(is_read=False)
+    queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['is_read',]
