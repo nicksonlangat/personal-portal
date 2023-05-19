@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Project
+from .models import Project, Notification, Message
 import requests
 import os
 from django.conf import settings
@@ -11,6 +11,21 @@ from django_filters.rest_framework import DjangoFilterBackend
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
+        fields = "__all__"
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = "__all__"
+    
+    def to_representation(self, instance):
+        rep = super(NotificationSerializer, self).to_representation(instance)
+        rep['message'] = MessageSerializer(instance.message).data
+        return rep
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
         fields = "__all__"
 
 # Create your views here.
@@ -39,3 +54,14 @@ class ProjectViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['is_clone',]
     search_fields = ['name']
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+   
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.filter(is_read=False)
+    serializer_class = NotificationSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['is_read',]
+    search_fields = ['title']
